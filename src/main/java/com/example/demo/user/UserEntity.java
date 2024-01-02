@@ -1,5 +1,6 @@
 package com.example.demo.user;
 
+import com.example.demo.token.Token;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,18 +21,20 @@ public class UserEntity implements UserDetails {
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
+    @OneToMany(mappedBy = "user")
+    private List<Token> tokens;
 
     UserEntity() {}
 
-    public UserEntity(Integer id, String firstname, String lastname, String email, String password, Role role) {
+    public UserEntity(Integer id, String firstname, String lastname, String email, String password, Role role, List<Token> tokens) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.tokens = tokens;
     }
-
 
     public Integer getId() {
         return id;
@@ -71,6 +74,14 @@ public class UserEntity implements UserDetails {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public List<Token> getTokens() {
+        return tokens;
+    }
+
+    public void setTokens(List<Token> tokens) {
+        this.tokens = tokens;
     }
 
     @Override
