@@ -1,14 +1,27 @@
 package com.example.demo.auth;
 
-public class AuthenticationResponse {
-    private String token;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    public String getToken() {
-     return token;
+public class AuthenticationResponse {
+    @JsonProperty("access_token")
+    private String accessToken;
+    @JsonProperty("refresh-token")
+    private String refreshToken;
+
+    public String getAccessToken() {
+     return accessToken;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
     public static class Builder {
@@ -18,8 +31,13 @@ public class AuthenticationResponse {
             authResponse = new AuthenticationResponse();
         }
 
-        public Builder token(String token) {
-            authResponse.token = token;
+        public Builder accessToken(String token) {
+            authResponse.accessToken = token;
+            return this;
+        }
+
+        public Builder refreshToken(String refreshToken) {
+            authResponse.refreshToken = refreshToken;
             return this;
         }
 

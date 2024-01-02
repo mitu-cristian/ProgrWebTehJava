@@ -6,12 +6,20 @@ import com.example.demo.token.TokenRepository;
 import com.example.demo.user.Role;
 import com.example.demo.user.UserEntity;
 import com.example.demo.user.UserRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -43,9 +51,11 @@ public class AuthenticationService {
                     .build();
             userRepository.save(user);
             String jwtToken = jwtService.generateToken(user);
+            String refreshToken = jwtService.generateRefreshToken(user);
             saveUserToken(user, jwtToken);
             return new AuthenticationResponse.Builder()
-                    .token(jwtToken)
+                    .accessToken(jwtToken)
+                    .refreshToken(refreshToken)
                     .build();
         }
         catch (Exception e) {
@@ -67,10 +77,12 @@ public class AuthenticationService {
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
             String jwtToken = jwtService.generateToken(user);
+            String refreshToken = jwtService.generateRefreshToken(user);
             revokeTokens(user);
             saveUserToken(user, jwtToken);
             return new AuthenticationResponse.Builder()
-                    .token(jwtToken)
+                    .accessToken(jwtToken)
+                    .refreshToken(refreshToken)
                     .build();
         } catch (Exception e) {
             // Log the exception or print the stack trace
@@ -100,6 +112,30 @@ public class AuthenticationService {
                 .revoked(false)
                 .build();
         tokenRepository.save(token);
+    }
+
+    public void refreshToken (HttpServletRequest request, HttpServletResponse response) throws IOException {
+        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        final String refreshToken;
+        final String email;
+        if(authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return;
+        }
+        refreshToken = authHeader.substring(7);
+        email = jwtService.extractEmail(refreshToken);
+        if(email != null) {
+            UserEntity userEntity = userRepository.findByEmail(email).get();
+            if(jwtService.isTokenValid(refreshToken, userEntity)) {
+                String accessToken = jwtService.generateToken(userEntity);
+                revokeTokens(userEntity);
+                saveUserToken(userEntity, accessToken);
+                AuthenticationResponse authResponse = new AuthenticationResponse.Builder()
+                        .accessToken(accessToken)
+                        .refreshToken(refreshToken)
+                        .build();
+                new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
+            }
+        }
     }
 
 }
