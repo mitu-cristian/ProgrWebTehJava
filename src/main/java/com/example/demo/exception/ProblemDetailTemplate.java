@@ -1,6 +1,5 @@
-package com.example.demo.error;
+package com.example.demo.exception;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.stereotype.Component;
