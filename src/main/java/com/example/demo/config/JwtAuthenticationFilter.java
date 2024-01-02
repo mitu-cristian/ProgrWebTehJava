@@ -6,6 +6,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,20 +14,30 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 
-@Component
+//@Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter{
-    private final JwtService jwtService;
-    private final UserDetailsService userDetailsService;
-    private final TokenRepository tokenRepository;
+    @Autowired
+    private JwtService jwtService;
+    @Autowired
+    private UserDetailsService userDetailsService;
+    @Autowired
+    private TokenRepository tokenRepository;
+    private final HandlerExceptionResolver handlerExceptionResolver;
 
-    JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService,
-                            TokenRepository tokenRepository) {
-        this.jwtService = jwtService;
-        this.userDetailsService = userDetailsService;
-        this.tokenRepository = tokenRepository;
+//    JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService,
+//                            TokenRepository tokenRepository, HandlerExceptionResolver handlerExceptionResolver) {
+//        this.jwtService = jwtService;
+//        this.userDetailsService = userDetailsService;
+//        this.tokenRepository = tokenRepository;
+//        this.handlerExceptionResolver = handlerExceptionResolver;
+//    }
+
+    public JwtAuthenticationFilter(HandlerExceptionResolver handlerExceptionResolver) {
+        this.handlerExceptionResolver = handlerExceptionResolver;
     }
 
     @Override
@@ -36,6 +47,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
     final String authHeader = request.getHeader("Authorization");
     final String token;
     final String email;
+
+    try {
     if(authHeader == null || !authHeader.startsWith("Bearer ")) {
         filterChain.doFilter(request, response);
         return;
@@ -58,5 +71,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         }
     }
     filterChain.doFilter(request, response);
+    }
+    catch(Exception exception) {
+        handlerExceptionResolver.resolveException(request, response, null, exception);
+    }
     }
 }

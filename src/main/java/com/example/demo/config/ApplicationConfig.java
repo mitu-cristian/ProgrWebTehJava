@@ -2,6 +2,8 @@ package com.example.demo.config;
 
 import com.example.demo.user.UserEntity;
 import com.example.demo.user.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,14 +15,24 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 @Configuration
 public class ApplicationConfig {
 
     private final UserRepository userRepository;
 
-    public ApplicationConfig(UserRepository userRepository) {
+        public ApplicationConfig(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    @Autowired
+    @Qualifier("handlerExceptionResolver")
+    private HandlerExceptionResolver handlerExceptionResolver;
+
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter(handlerExceptionResolver);
     }
 
     @Bean
