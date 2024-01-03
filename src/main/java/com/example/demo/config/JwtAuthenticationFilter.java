@@ -1,5 +1,6 @@
 package com.example.demo.config;
 
+import com.example.demo.token.Token;
 import com.example.demo.token.TokenRepository;
 import com.example.demo.user.UserEntity;
 import jakarta.servlet.FilterChain;
@@ -17,6 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
+import java.util.Optional;
 
 //@Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter{
@@ -27,14 +29,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
     @Autowired
     private TokenRepository tokenRepository;
     private final HandlerExceptionResolver handlerExceptionResolver;
-
-//    JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService,
-//                            TokenRepository tokenRepository, HandlerExceptionResolver handlerExceptionResolver) {
-//        this.jwtService = jwtService;
-//        this.userDetailsService = userDetailsService;
-//        this.tokenRepository = tokenRepository;
-//        this.handlerExceptionResolver = handlerExceptionResolver;
-//    }
 
     public JwtAuthenticationFilter(HandlerExceptionResolver handlerExceptionResolver) {
         this.handlerExceptionResolver = handlerExceptionResolver;
@@ -74,6 +68,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
     }
     catch(Exception exception) {
         handlerExceptionResolver.resolveException(request, response, null, exception);
+        exception.printStackTrace();
     }
     }
 }

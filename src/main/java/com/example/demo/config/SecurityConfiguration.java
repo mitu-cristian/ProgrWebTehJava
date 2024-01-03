@@ -23,7 +23,6 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 public class SecurityConfiguration {
     private final AuthenticationProvider authenticationProvider;
     private final LogoutHandler logoutHandler;
-//    @Autowired
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
 
@@ -40,7 +39,8 @@ public class SecurityConfiguration {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(
                         request -> request
-                                .requestMatchers("/api/v1/auth/**").permitAll()
+                                .requestMatchers("/api/v1/auth/register", "/api/v1/auth/authenticate",
+                                        "/api/v1/auth/refresh-token").permitAll()
                                 .anyRequest().authenticated()
 
                 )

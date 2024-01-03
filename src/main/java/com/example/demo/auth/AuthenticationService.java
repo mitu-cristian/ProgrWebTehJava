@@ -1,5 +1,6 @@
 package com.example.demo.auth;
 
+import com.example.demo.MessageResponse;
 import com.example.demo.config.JwtService;
 import com.example.demo.token.Token;
 import com.example.demo.token.TokenRepository;
@@ -13,14 +14,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AuthenticationService {
@@ -67,7 +66,7 @@ public class AuthenticationService {
         }
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) throws Exception{
+    public AuthenticationResponse authenticate( AuthenticationRequest request) throws Exception{
         try {
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
@@ -93,25 +92,46 @@ public class AuthenticationService {
         }
     }
 
-    private void revokeTokens(UserEntity user) {
-        List<Token> oldTokens = tokenRepository.findAllValidTokensByUser(user.getId());
-        oldTokens.forEach(
-                oldToken -> {
-                    oldToken.setExpired(true);
-                    oldToken.setRevoked(true);
-                    tokenRepository.save(oldToken);
-                }
-        );
+    public MessageResponse registerAdmin(RegisterRequest request) throws Exception {
+        try {
+            UserEntity admin = new UserEntity.Builder()
+                    .firstname(request.getFirstname())
+                    .lastname(request.getLastname())
+                    .email(request.getEmail())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .role(Role.ADMIN)
+                    .build();
+            userRepository.save(admin);
+            return new MessageResponse.Builder()
+                    .success(true)
+                    .message("Admin account successfully created")
+                    .build();
+        }
+        catch (Exception e) {
+            // Log the exception or print the stack trace
+            e.printStackTrace();
+            System.out.println("Exception during authentication: " + e.getMessage());
+            // Handle the exception or rethrow it as needed
+            throw new RuntimeException("Registration failed", e);
+        }
     }
 
-    private void saveUserToken(UserEntity user, String jwtToken) {
-        Token token = new Token.Builder()
-                .user(user)
-                .token(jwtToken)
-                .expired(false)
-                .revoked(false)
-                .build();
-        tokenRepository.save(token);
+    public void createAdminAccount(RegisterRequest request) throws Exception {
+        try {
+            UserEntity admin = new UserEntity.Builder()
+                    .firstname(request.getFirstname())
+                    .lastname(request.getLastname())
+                    .email(request.getEmail())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .role(Role.ADMIN)
+                    .build();
+            userRepository.save(admin);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            System.out.println("Exception during creation of admin account " + e.getMessage());
+            throw new RuntimeException("Registration failed", e);
+        }
     }
 
     public void refreshToken (HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -135,6 +155,49 @@ public class AuthenticationService {
                         .build();
                 new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
             }
+        }
+    }
+
+    private void revokeTokens(UserEntity user) {
+        List<Token> oldTokens = tokenRepository.findAllValidTokensByUser(user.getId());
+        oldTokens.forEach(
+                oldToken -> {
+                    oldToken.setExpired(true);
+                    oldToken.setRevoked(true);
+                    tokenRepository.save(oldToken);
+                }
+        );
+    }
+
+    private void saveUserToken(UserEntity user, String jwtToken) {
+        Token token = new Token.Builder()
+                .user(user)
+                .token(jwtToken)
+                .expired(false)
+                .revoked(false)
+                .build();
+        tokenRepository.save(token);
+    }
+
+    public MessageResponse deleteMyAccount(HttpServletRequest request) {
+
+        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        final String token = authHeader.substring(7);
+        final String email = jwtService.extractEmail(token);
+        Optional<UserEntity> optionalUserEntity = userRepository.findByEmail(email);
+        try {
+            userRepository.deleteById(optionalUserEntity.get().getId());
+            return new MessageResponse.Builder()
+                    .success(true)
+                    .message("Account successfully deleted.")
+                    .build();
+        }
+        catch (Exception e) {
+            // Log the exception or print the stack trace
+            e.printStackTrace();
+            System.out.println("Exception thrown when deleting the account: " + e.getMessage());
+            // Handle the exception or rethrow it as needed
+            throw new RuntimeException("Failed to delete the account", e);
         }
     }
 
