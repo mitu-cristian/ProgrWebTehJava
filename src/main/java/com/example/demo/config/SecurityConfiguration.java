@@ -23,7 +23,6 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 public class SecurityConfiguration {
     private final AuthenticationProvider authenticationProvider;
     private final LogoutHandler logoutHandler;
-//    @Autowired
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
 

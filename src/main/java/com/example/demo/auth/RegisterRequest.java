@@ -1,9 +1,17 @@
 package com.example.demo.auth;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+
 public class RegisterRequest {
+    @Pattern(regexp = "^[a-zA-Z ]+$", message = "The firstname should contain only letters.")
     private String firstname;
+    @Pattern(regexp = "^[a-zA-Z ]+$", message = "The lastname should contain only letters.")
     private String lastname;
+    @Email(message = "The email address is invalid")
     private String email;
+    @NotNull(message = "Password should not be empty.")
     private String password;
 
     public String getFirstname() {

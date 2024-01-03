@@ -28,14 +28,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
     private TokenRepository tokenRepository;
     private final HandlerExceptionResolver handlerExceptionResolver;
 
-//    JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService,
-//                            TokenRepository tokenRepository, HandlerExceptionResolver handlerExceptionResolver) {
-//        this.jwtService = jwtService;
-//        this.userDetailsService = userDetailsService;
-//        this.tokenRepository = tokenRepository;
-//        this.handlerExceptionResolver = handlerExceptionResolver;
-//    }
-
     public JwtAuthenticationFilter(HandlerExceptionResolver handlerExceptionResolver) {
         this.handlerExceptionResolver = handlerExceptionResolver;
     }
