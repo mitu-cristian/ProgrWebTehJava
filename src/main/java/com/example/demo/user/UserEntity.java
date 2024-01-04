@@ -1,5 +1,7 @@
 package com.example.demo.user;
 
+import com.example.demo.business.reservation.Reservation;
+import com.example.demo.business.review.Review;
 import com.example.demo.token.Token;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,10 +26,15 @@ public class UserEntity implements UserDetails {
     private Role role;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Token> tokens;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Review review;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Reservation> reservations;
 
     UserEntity() {}
 
-    public UserEntity(Integer id, String firstname, String lastname, String email, String password, Role role, List<Token> tokens) {
+    public UserEntity(Integer id, String firstname, String lastname, String email, String password, Role role, List<Token> tokens,
+                      Review review, List<Reservation> reservations) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
@@ -35,6 +42,8 @@ public class UserEntity implements UserDetails {
         this.password = password;
         this.role = role;
         this.tokens = tokens;
+        this.review = review;
+        this.reservations = reservations;
     }
 
     public Integer getId() {
@@ -83,6 +92,22 @@ public class UserEntity implements UserDetails {
 
     public void setTokens(List<Token> tokens) {
         this.tokens = tokens;
+    }
+
+    public Review getReview() {
+        return review;
+    }
+
+    public void setReview(Review review) {
+        this.review = review;
+    }
+
+    public List<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(List<Reservation> reservations) {
+        this.reservations = reservations;
     }
 
     @Override
