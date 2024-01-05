@@ -30,7 +30,7 @@ public class RoomNumber {
 
         this.id = id;
         this.number = number;
-//        this.unavailableDates = unavailableDates;
+        this.unavailableDates = unavailableDates;
         this.roomType = roomType;
         this.reservations = reservations;
     }

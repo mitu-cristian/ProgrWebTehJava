@@ -18,7 +18,6 @@ public class HotelService {
                     .name("Hotel Creta")
                     .build();
             hotelRepo.save(hotel);
-            System.out.println("Hotel created");
         }
         catch(Exception e) {
             e.printStackTrace();

@@ -40,7 +40,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(
                         request -> request
                                 .requestMatchers("/api/v1/auth/register", "/api/v1/auth/authenticate",
-                                        "/api/v1/auth/refresh-token").permitAll()
+                                        "/api/v1/auth/refresh-token", "/api/v1/public/**").permitAll()
                                 .anyRequest().authenticated()
 
                 )

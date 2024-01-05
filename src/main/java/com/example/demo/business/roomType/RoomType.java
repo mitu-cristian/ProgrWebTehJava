@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
-@Table(name = "room_types")
+@Table(name = "room_types", uniqueConstraints = @UniqueConstraint(columnNames = "name"))
 public class RoomType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -102,6 +102,11 @@ public class RoomType {
 
         public Builder maxPeople(Integer maxPeople) {
             roomType.maxPeople = maxPeople;
+            return this;
+        }
+
+        public Builder hotel(Hotel hotel){
+            roomType.hotel = hotel;
             return this;
         }
 

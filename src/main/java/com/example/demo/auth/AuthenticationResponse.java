@@ -7,7 +7,7 @@ public class AuthenticationResponse {
     private String accessToken;
     @JsonProperty("refresh-token")
     private String refreshToken;
-    private String message;
+//    private String message;
 
     public String getAccessToken() {
      return accessToken;
@@ -25,13 +25,13 @@ public class AuthenticationResponse {
         this.refreshToken = refreshToken;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
+//    public String getMessage() {
+//        return message;
+//    }
+//
+//    public void setMessage(String message) {
+//        this.message = message;
+//    }
 
     public static class Builder {
         private final AuthenticationResponse authResponse;
@@ -50,10 +50,10 @@ public class AuthenticationResponse {
             return this;
         }
 
-        public Builder message(String message) {
-            authResponse.message = message;
-            return this;
-        }
+//        public Builder message(String message) {
+//            authResponse.message = message;
+//            return this;
+//        }
 
         public AuthenticationResponse build() {
             return authResponse;
