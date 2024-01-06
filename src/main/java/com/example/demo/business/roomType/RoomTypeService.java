@@ -19,6 +19,21 @@ public class RoomTypeService {
         this.roomTypeRepository = roomTypeRepository;
     }
 
+    public RoomTypeResponse getOneRoomType(Integer hotelId, Integer roomTypeId) {
+        if(validRoomTypeOfHotel(hotelId, roomTypeId) == true) {
+            RoomType existingRoomType = roomTypeRepository.findById(roomTypeId).get();
+            return new RoomTypeResponse.Builder()
+                    .id(existingRoomType.getId())
+                    .name(existingRoomType.getName())
+                    .price(existingRoomType.getPrice())
+                    .maxPeople(existingRoomType.getMaxPeople())
+                    .roomNumbers(existingRoomType.getRoomNumbers())
+                    .build();
+        }
+        else
+            throw new RuntimeException("Error while fetching the room type with id of " + roomTypeId + ".");
+    }
+
     public List<RoomTypeResponse> getAllRoomsType(Integer hotelId) {
         Optional<Hotel> optionalHotel = hotelRepository.findById(hotelId);
         if(optionalHotel.isPresent()) {
@@ -29,6 +44,7 @@ public class RoomTypeService {
                     {
                         roomsTypeResponseList.add(
                                 new RoomTypeResponse.Builder()
+                                        .id(existingRoomType.getId())
                                         .name(existingRoomType.getName())
                                         .price(existingRoomType.getPrice())
                                         .maxPeople(existingRoomType.getMaxPeople())
@@ -43,21 +59,7 @@ public class RoomTypeService {
             throw new RuntimeException("Error while fetching all the room types");
     }
 
-    public RoomTypeResponse getOneRoomType(Integer hotelId, Integer roomTypeId) {
-        if(validRoomTypeOfHotel(hotelId, roomTypeId) == true) {
-            RoomType existingRoomType = roomTypeRepository.findById(roomTypeId).get();
-            return new RoomTypeResponse.Builder()
-                    .name(existingRoomType.getName())
-                    .price(existingRoomType.getPrice())
-                    .maxPeople(existingRoomType.getMaxPeople())
-                    .roomNumbers(existingRoomType.getRoomNumbers())
-                    .build();
-        }
-        else
-            throw new RuntimeException("Error while fetching the room type with id of " + roomTypeId + ".");
-    }
-
-    public MessageResponse addRoomType(Integer hotelId, RoomTypeRequest request) {
+    public MessageResponse createRoomType(Integer hotelId, RoomTypeRequest request) {
         Optional<Hotel> hotelOptional = hotelRepository.findById(hotelId);
         if(hotelOptional.isPresent()) {
             RoomType roomType = new RoomType.Builder()
@@ -129,10 +131,11 @@ public class RoomTypeService {
                     .message("Room type successfully deleted")
                     .build();
         }
-        else return new MessageResponse.Builder()
-                .success(false)
-                .message("Error while deleting the room.")
-                .build();
+        else throw new RuntimeException("Error while fetching the room type.");
+//        else return new MessageResponse.Builder()
+//                .success(false)
+//                .message("Error while deleting the room.")
+//                .build();
     }
 
     private boolean validRoomTypeOfHotel(Integer hotelId, Integer roomTypeId) {

@@ -47,4 +47,26 @@ public class UnavailableDate {
     public void setRoomNumber(RoomNumber roomNumber) {
         this.roomNumber = roomNumber;
     }
+
+    public static class Builder {
+        private final UnavailableDate unavailableDate;
+
+        public Builder() {
+            unavailableDate = new UnavailableDate();
+        }
+
+        public Builder unavailableDate(LocalDate unavailableDate) {
+            this.unavailableDate.unavailableDate = unavailableDate;
+            return this;
+        }
+
+        public Builder roomNumber(RoomNumber roomNumber) {
+            unavailableDate.roomNumber = roomNumber;
+            return this;
+        }
+
+        public UnavailableDate builder() {
+            return unavailableDate;
+        }
+    }
 }

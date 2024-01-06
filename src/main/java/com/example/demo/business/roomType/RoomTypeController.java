@@ -37,8 +37,8 @@ public class RoomTypeController {
 //  @ACCESS     ADMIN
     @PreAuthorize("hasAuthority('ADMIN')")
     @RequestMapping(value = "/admin/{hotelId}/room-type", method = RequestMethod.POST)
-    public ResponseEntity<MessageResponse> addRoomType(@PathVariable Integer hotelId, @RequestBody RoomTypeRequest request) {
-        return ResponseEntity.status(201).body(roomTypeService.addRoomType(hotelId, request));
+    public ResponseEntity<MessageResponse> createRoomType(@PathVariable Integer hotelId, @RequestBody RoomTypeRequest request) {
+        return ResponseEntity.status(201).body(roomTypeService.createRoomType(hotelId, request));
     }
 
 //  @METHOD     PUT

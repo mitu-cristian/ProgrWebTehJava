@@ -6,10 +6,19 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class RoomTypeResponse {
+    private Integer id;
     private String name;
     private BigDecimal price;
     private Integer maxPeople;
     private List<RoomNumber> roomNumbers;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -48,6 +57,11 @@ public class RoomTypeResponse {
 
         public Builder() {
             response = new RoomTypeResponse();
+        }
+
+        public Builder id(Integer id) {
+            response.id = id;
+            return this;
         }
 
         public Builder name(String name) {

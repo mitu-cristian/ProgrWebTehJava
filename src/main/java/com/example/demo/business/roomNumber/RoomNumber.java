@@ -8,7 +8,7 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "room_numbers")
+@Table(name = "room_numbers", uniqueConstraints = @UniqueConstraint(columnNames = "number"))
 public class RoomNumber {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -84,6 +84,11 @@ public class RoomNumber {
 
         public Builder number(Integer number) {
             roomNumber.number = number;
+            return this;
+        }
+
+        public Builder roomType(RoomType roomType) {
+            roomNumber.roomType = roomType;
             return this;
         }
 
