@@ -8,7 +8,7 @@ import jakarta.persistence.*;
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private java.lang.Integer id;
     @OneToOne
     @JoinColumn (name = "users_id")
     private UserEntity user;
@@ -18,7 +18,7 @@ public class Review {
 
     public Review() {}
 
-    public Review(Integer id, UserEntity user, Rating rating, String description) {
+    public Review(java.lang.Integer id, UserEntity user, Rating rating, String description) {
         this.id = id;
         this.user = user;
         this.rating = rating;
@@ -55,5 +55,32 @@ public class Review {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public static class Builder {
+        private final Review review;
+
+        public Builder() {
+            review = new Review();
+        }
+
+        public Builder user(UserEntity user){
+            review.user = user;
+            return this;
+        }
+
+        public Builder rating(Rating rating) {
+            review.rating = rating;
+            return this;
+        }
+
+        public Builder description(String description){
+            review.description = description;
+            return this;
+        }
+
+        public Review build(){
+            return review;
+        }
     }
 }
