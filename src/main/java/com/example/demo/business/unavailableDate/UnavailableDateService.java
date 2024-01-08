@@ -9,6 +9,7 @@ import com.example.demo.business.roomType.RoomType;
 import com.example.demo.business.roomType.RoomTypeRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -59,19 +60,22 @@ public class UnavailableDateService {
         else throw new RuntimeException("Error while fetching all the unavailable dates.");
     }
 
-    public MessageResponse createUnavailableDate(Integer hotelId, Integer roomTypeId,
+    public void createUnavailableDate(Integer hotelId, Integer roomTypeId,
                                                  Integer roomNumberId, UnavailableDateRequest request) {
         if(validRoomNumber(hotelId, roomTypeId, roomNumberId) == true) {
             RoomNumber existingRoomNumber = roomNumberRepository.findById(roomNumberId).get();
-            UnavailableDate unavailableDate = new UnavailableDate.Builder()
-                    .unavailableDate(request.getUnavailableDate())
-                    .roomNumber(existingRoomNumber)
-                    .builder();
-            unavailableDateRepository.save(unavailableDate);
-            return new MessageResponse.Builder()
-                    .success(true)
-                    .message("Unavailable date successfully added.")
-                    .build();
+            if(unavailableDateRepository.findByRoomNumberAndUnavailableDate(existingRoomNumber, request.getUnavailableDate()) == 0) {
+                UnavailableDate unavailableDate = new UnavailableDate.Builder()
+                        .unavailableDate(request.getUnavailableDate())
+                        .roomNumber(existingRoomNumber)
+                        .builder();
+                unavailableDateRepository.save(unavailableDate);
+            }
+            else throw new RuntimeException("The unavailable date " + request.getUnavailableDate() + " is already present.");
+//            return new MessageResponse.Builder()
+//                    .success(true)
+//                    .message("Unavailable date successfully added.")
+//                    .build();
         }
         else throw new RuntimeException("Error while adding unavailable date.");
     }
@@ -101,6 +105,17 @@ public class UnavailableDateService {
                     .build();
         }
         else throw new RuntimeException("Error while deleting the unavailable date.");
+    }
+
+    public void deleteUnavailableDateByDateAndRoomNumberId(RoomNumber roomNumber, LocalDate date) {
+        try {
+            unavailableDateRepository.deleteUnavailableDateByDateAndRoomNumber(roomNumber, date);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            System.out.println("Exception when deleting the unavailableDate: " + e.getMessage());
+            throw new RuntimeException("Exception when deleting the unavailableDate", e);
+        }
     }
 
     private boolean validRoomNumber(Integer hotelId, Integer roomTypeId, Integer roomNumberId) {

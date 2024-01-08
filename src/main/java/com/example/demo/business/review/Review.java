@@ -8,17 +8,16 @@ import jakarta.persistence.*;
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private java.lang.Integer id;
     @OneToOne
     @JoinColumn (name = "users_id")
     private UserEntity user;
-    @Enumerated(EnumType.ORDINAL)
-    private Rating rating;
+    private Integer rating;
     private String description;
 
     public Review() {}
 
-    public Review(Integer id, UserEntity user, Rating rating, String description) {
+    public Review(java.lang.Integer id, UserEntity user, Integer rating, String description) {
         this.id = id;
         this.user = user;
         this.rating = rating;
@@ -41,11 +40,11 @@ public class Review {
         this.user = user;
     }
 
-    public Rating getRating() {
+    public Integer getRating() {
         return rating;
     }
 
-    public void setRating(Rating rating) {
+    public void setRating(Integer rating) {
         this.rating = rating;
     }
 
@@ -55,5 +54,32 @@ public class Review {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public static class Builder {
+        private final Review review;
+
+        public Builder() {
+            review = new Review();
+        }
+
+        public Builder user(UserEntity user){
+            review.user = user;
+            return this;
+        }
+
+        public Builder rating(Integer rating) {
+            review.rating = rating;
+            return this;
+        }
+
+        public Builder description(String description){
+            review.description = description;
+            return this;
+        }
+
+        public Review build(){
+            return review;
+        }
     }
 }

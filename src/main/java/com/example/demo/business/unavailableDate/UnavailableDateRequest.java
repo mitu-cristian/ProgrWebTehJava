@@ -16,4 +16,21 @@ public class UnavailableDateRequest {
     public void setUnavailableDate(LocalDate unavailableDate) {
         this.unavailableDate = unavailableDate;
     }
+
+    public static class Builder{
+        private final UnavailableDateRequest request;
+
+        public Builder() {
+            request = new UnavailableDateRequest();
+        }
+
+        public Builder unavailableDate(LocalDate unavailableDate) {
+            request.unavailableDate = unavailableDate;
+            return this;
+        }
+
+        public UnavailableDateRequest build(){
+            return request;
+        }
+    }
 }

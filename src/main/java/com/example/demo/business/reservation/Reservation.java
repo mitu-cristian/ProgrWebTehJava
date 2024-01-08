@@ -5,6 +5,7 @@ import com.example.demo.user.UserEntity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -21,14 +22,14 @@ public class Reservation {
     @ManyToOne
     @JoinColumn(name = "room_numbers_id")
     private RoomNumber roomNumber;
-    private Date checkIn;
-    private Date checkOut;
+    private LocalDate checkIn;
+    private LocalDate checkOut;
     @Enumerated(EnumType.STRING)
     private Status status;
 
     public Reservation() {}
 
-    public Reservation(Integer id, UserEntity user, BigDecimal price, Integer nrPeople, RoomNumber roomNumber, Date checkIn, Date checkOut, Status status) {
+    public Reservation(Integer id, UserEntity user, BigDecimal price, Integer nrPeople, RoomNumber roomNumber, LocalDate checkIn, LocalDate checkOut, Status status) {
         this.id = id;
         this.user = user;
         this.price = price;
@@ -79,19 +80,19 @@ public class Reservation {
         this.roomNumber = roomNumber;
     }
 
-    public Date getCheckIn() {
+    public LocalDate getCheckIn() {
         return checkIn;
     }
 
-    public void setCheckIn(Date checkIn) {
+    public void setCheckIn(LocalDate checkIn) {
         this.checkIn = checkIn;
     }
 
-    public Date getCheckOut() {
+    public LocalDate getCheckOut() {
         return checkOut;
     }
 
-    public void setCheckOut(Date checkOut) {
+    public void setCheckOut(LocalDate checkOut) {
         this.checkOut = checkOut;
     }
 
@@ -101,5 +102,52 @@ public class Reservation {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public static class Builder {
+        private final Reservation reservation;
+
+        public Builder() {
+            reservation = new Reservation();
+        }
+
+        public Builder user(UserEntity user){
+            reservation.user = user;
+            return this;
+        }
+
+        public Builder price(BigDecimal price) {
+            reservation.price = price;
+            return this;
+        }
+
+        public Builder nrPeople(Integer nrPeople){
+            reservation.nrPeople = nrPeople;
+            return this;
+        }
+
+        public Builder roomNumber(RoomNumber roomNumber) {
+            reservation.roomNumber = roomNumber;
+            return this;
+        }
+
+        public Builder checkIn(LocalDate checkIn){
+            reservation.checkIn = checkIn;
+            return this;
+        }
+
+        public Builder checkOut(LocalDate checkOut) {
+            reservation.checkOut = checkOut;
+            return this;
+        }
+
+        public Builder status(Status status) {
+            reservation.status = status;
+            return this;
+        }
+
+        public Reservation builder(){
+            return reservation;
+        }
     }
 }

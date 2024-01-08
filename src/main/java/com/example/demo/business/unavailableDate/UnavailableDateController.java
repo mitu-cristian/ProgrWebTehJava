@@ -43,11 +43,11 @@ public ResponseEntity<List<UnavailableDateResponse>> getAllUnavailableDates(@Pat
     @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('USER')")
     @RequestMapping(value = "/{hotelId}/room-type/{roomTypeId}/room-number/{roomNumberId}/unavailable-date",
     method = RequestMethod.POST)
-    public ResponseEntity<MessageResponse> createUnavailableDate(@PathVariable Integer hotelId,
+    public void createUnavailableDate(@PathVariable Integer hotelId,
                                                                  @PathVariable Integer roomTypeId,
                                                                  @PathVariable Integer roomNumberId,
                                                                  @RequestBody UnavailableDateRequest request) {
-        return ResponseEntity.ok(unavailableDateService.createUnavailableDate(hotelId, roomTypeId, roomNumberId, request));
+        unavailableDateService.createUnavailableDate(hotelId, roomTypeId, roomNumberId, request);
     }
 
 //  @METHOD     PUT
