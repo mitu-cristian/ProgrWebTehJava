@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface RoomTypeRepository extends JpaRepository<RoomType, Integer> {
     Optional<List<RoomType>> findByHotel (Hotel hotel);
+    Optional<RoomType> findByName(String name);
 }

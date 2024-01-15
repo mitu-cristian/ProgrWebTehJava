@@ -128,7 +128,7 @@ public class RoomTypeService {
             roomTypeRepository.delete(roomTypeRepository.findById(roomTypeId).get());
             return new MessageResponse.Builder()
                     .success(true)
-                    .message("Room type successfully deleted")
+                    .message("Room type successfully deleted.")
                     .build();
         }
         else throw new RuntimeException("Error while fetching the room type.");

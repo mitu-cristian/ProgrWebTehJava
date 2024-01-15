@@ -19,4 +19,26 @@ public class AuthenticationRequest {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public static class Builder{
+        private AuthenticationRequest authRequest;
+
+        public Builder() {
+            authRequest = new AuthenticationRequest();
+        }
+
+        public Builder email(String email) {
+            authRequest.email = email;
+            return this;
+        }
+
+        public Builder password(String password){
+            authRequest.password = password;
+            return this;
+        }
+
+        public AuthenticationRequest build() {
+            return authRequest;
+        }
+    }
 }
