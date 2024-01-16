@@ -1,4 +1,4 @@
-package com.example.demo.business.roomType;
+package com.example.demo.business.roomNumber;
 
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -14,98 +14,95 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.math.BigDecimal;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class RoomTypeControllerIntegrationTest {
+public class RoomNumberControllerIntegrationTest {
     @Autowired
     private TestRestTemplate template;
     @Autowired
-    private RoomTypeRepository roomTypeRepository;
+    private RoomNumberRepository roomNumberRepository;
     @Value("${application.security.jwt.token.admin}")
     private String adminToken;
 
     @Test
     @Order(1)
-    void getOneRoomType() throws Exception {
-        HttpEntity<String> httpEntity = new HttpEntity<String>(null, null);
-        ResponseEntity<String> responseEntity = template.exchange("/api/v1/public/1/room-type/1",
-                HttpMethod.GET, httpEntity,String.class);
+    void getOneRoomNumber() throws Exception {
+        HttpEntity<String> httpEntity = new HttpEntity<>(null, null);
+        ResponseEntity<String> responseEntity = template.exchange("/api/v1/public/1/room-type/1/room-number/1",
+                HttpMethod.GET, httpEntity, String.class);
         assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
     }
 
     @Test
     @Order(1)
-    void getAllRoomsType() throws Exception {
-        HttpEntity<String> httpEntity = new HttpEntity<String>(null, null);
-        ResponseEntity<String> responseEntity = template.exchange("/api/v1/public/1/room-type",
-                HttpMethod.GET, httpEntity,String.class);
+    void getAllRoomsNumber() throws Exception {
+        HttpEntity<String> httpEntity = new HttpEntity<>(null, null);
+        ResponseEntity<String> responseEntity = template.exchange("/api/v1/public/1/room-type/1/room-number",
+                HttpMethod.GET, httpEntity, String.class);
         assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
     }
 
     @Test
     @Order(2)
-    void createRoomType() throws Exception {
+    void createRoomNumber() throws Exception {
         String requestBody = """
                 {
-                    "name": "Camera test",
-                    "price": "200",
-                    "maxPeople": 2
+                    "number": 0
                 }
                 """;
         HttpHeaders headers = createHeadersForAdmin();
-        HttpEntity<String> httpEntity = new HttpEntity<String>(requestBody, headers);
-        ResponseEntity<String> responseEntity = template.exchange("/api/v1/admin/1/room-type",
+        HttpEntity<String> httpEntity = new HttpEntity<>(requestBody, headers);
+        ResponseEntity<String> responseEntity = template.exchange("/api/v1/admin/1/room-type/1/room-number",
                 HttpMethod.POST, httpEntity, String.class);
         assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
         String expectedResponse = """
-                {"success": true,
-                "message": "Room type successfully added."}
+                { "success": true,
+                "message": "Room number successfully created."}
                 """;
         JSONAssert.assertEquals(expectedResponse, responseEntity.getBody(), false);
     }
-
 
     @Test
     @Order(3)
-    void updateRoomType() throws Exception {
+    void updateRoomNumber() throws Exception {
         String requestBody = """
-                {
-                    "name": "Camera test update"
-                }
+                {"number": 0}
                 """;
         HttpHeaders headers = createHeadersForAdmin();
-        HttpEntity<String> httpEntity = new HttpEntity<String>(requestBody, headers);
-        Integer id = roomTypeRepository.findByName("Camera test").get().getId();
-        ResponseEntity<String> responseEntity = template.exchange("/api/v1/admin/1/room-type/" + id,
+        HttpEntity<String> httpEntity = new HttpEntity<>(requestBody, headers);
+        Integer id = roomNumberRepository.findByNumber(0).get().getId();
+        ResponseEntity<String> responseEntity = template.exchange("/api/v1/admin/1/room-type/1/room-number/" + id,
                 HttpMethod.PUT, httpEntity, String.class);
         assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
         String expectedResponse = """
-                {"success": true,
-                "message": "Room type successfully updated."}
+                { "success": true,
+                "message": "Room number successfully updated."}
                 """;
         JSONAssert.assertEquals(expectedResponse, responseEntity.getBody(), false);
     }
+
     @Test
     @Order(4)
-    void deleteRoomType() throws Exception {
+    void deleteRoomNumber() throws Exception {
         HttpHeaders headers = createHeadersForAdmin();
-        HttpEntity httpEntity = new HttpEntity<>(null, headers);
-        Integer id = roomTypeRepository.findByName("Camera test update").get().getId();
-        ResponseEntity<String> responseEntity = template.exchange("/api/v1/admin/1/room-type/" + id,
+        HttpEntity<String> httpEntity = new HttpEntity<>(null, headers);
+        Integer id = roomNumberRepository.findByNumber(0).get().getId();
+        ResponseEntity<String> responseEntity = template.exchange("/api/v1/admin/1/room-type/1/room-number/" + id,
                 HttpMethod.DELETE, httpEntity, String.class);
         assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
         String expectedResponse = """
-                {"success": true,
-                "message": "Room type successfully deleted."}
+                { "success": true,
+                "message": "Room number successfully deleted."}
                 """;
-        JSONAssert.assertEquals(expectedResponse, responseEntity.getBody(), true);
+        JSONAssert.assertEquals(expectedResponse, responseEntity.getBody(), false);
     }
 
     private HttpHeaders createHeadersForAdmin() {
-        try{
+        try {
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Type", "application/json");
             headers.add("Authorization", "Bearer " + adminToken);

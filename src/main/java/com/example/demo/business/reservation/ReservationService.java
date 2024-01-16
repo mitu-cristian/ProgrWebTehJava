@@ -68,7 +68,6 @@ public class ReservationService {
                     .checkOut(reservationUserRequest.getCheckOut())
                     .status(Status.NEW)
                     .builder();
-            reservationRepository.save(reservation);
             List<LocalDate> dateRange = getDateRange(reservationUserRequest.getCheckIn(),
                     reservationUserRequest.getCheckOut());
             dateRange.forEach(
@@ -80,9 +79,10 @@ public class ReservationService {
 
                     }
             );
+            reservationRepository.save(reservation);
             return new MessageResponse.Builder()
                     .success(true)
-                    .message("Reservation successfully added.")
+                    .message("Reservation successfully created.")
                     .build();
         }
         else throw new RuntimeException("Error while user creates the reservation.");
@@ -95,7 +95,7 @@ public class ReservationService {
             reservationRepository.save(existingReservation);
             return new MessageResponse.Builder()
                     .success(true)
-                    .message("Successfully changed the status of reservation to completed")
+                    .message("Successfully changed the status of reservation to completed.")
                     .build();
         }
         else throw new RuntimeException("Error while changing the status of reservation to completed.");

@@ -141,7 +141,7 @@ public class ReviewService {
             reviewRepository.deleteByReviewId(optionalReview.get().getId());
             return new MessageResponse.Builder()
                     .success(true)
-                    .message("Review successfully deleted")
+                    .message("Review successfully deleted.")
                     .build();
         }
     }

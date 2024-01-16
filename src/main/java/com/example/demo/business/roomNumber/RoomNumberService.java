@@ -69,7 +69,7 @@ public class RoomNumberService {
             roomNumberRepository.save(roomNumber);
             return new MessageResponse.Builder()
                     .success(true)
-                    .message("RoomNumber successfully created")
+                    .message("Room number successfully created.")
                     .build();
         }
         else throw new RuntimeException("Wrong hotelId and/or roomTypeId");
@@ -96,7 +96,7 @@ public class RoomNumberService {
             roomNumberRepository.deleteById(roomNumberId);
             return new MessageResponse.Builder()
                     .success(true)
-                    .message("Successfully deleted the room number")
+                    .message("Room number successfully deleted.")
                     .build();
         }
         else

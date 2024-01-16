@@ -21,7 +21,7 @@ public class ReviewController {
 
 //  @METHOD     GET
 //  @DESC       user gets the review
-//  @ACCESS     ADMIN
+//  @ACCESS     USER
     @PreAuthorize("hasAuthority('USER')")
     @RequestMapping(value = "/user/review")
     public ResponseEntity<ReviewResponse> getReview(HttpServletRequest request) {
